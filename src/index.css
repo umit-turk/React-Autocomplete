@@ -32,9 +32,25 @@ body{
     width: 100%;
     border-radius: 0 0 10px 10px;
     background: #fff;
+    max-height: 300px;
+    overflow: auto;
 }
 .search .search-result .search-result-item {
-    padding: 10px 15px;
+    padding: 0px 15px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.search .search-result .search-result-item:hover {
+    background: rgb(161, 87, 87);
+    
+}
+
+.search .search-result .search-result-item .item-phone {
+    margin-left: 15px;
+    color: #999;
 }
 
 .search .result-not-found{

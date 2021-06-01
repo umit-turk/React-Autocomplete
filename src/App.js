@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 
-const data = [
+/* const data = [
   {
     id: 1,
     title: "test 1",
@@ -17,11 +17,12 @@ const data = [
     id: 4,
     title: "Test 4",
   },
-];
+]; */
 
 function App() {
   const [search, setSearch] = useState("");
   const [result, setResult] = useState(false);
+  const [loading, setLoading] = useState(false)
   const searchRef = useRef();
 
   const isTyping = search.replace(/\s+/, "").length > 0;
@@ -39,27 +40,44 @@ function App() {
    }
   };
 
+  const getResultItem = (item) => {
+    console.log(item)
+  }
+
+  useEffect(() => {
+    console.log(loading)
+  }, [loading])
+
   useEffect(() => {
     if (isTyping) {
-      const filteredResult = data.filter((item) =>
+    /*   const filteredResult = data.filter((item) =>
         item.title.toLowerCase().includes(search.toLowerCase())
       );
       setResult(filteredResult.length > 0 ? filteredResult : false);
+ */
+      setLoading(true)
+
+      const getData = setTimeout(() => {
+        fetch(`https://jsonplaceholder.typicode.com/users?q=${search}`)
+        .then(res => res.json())
+        .then(data => {
+          setResult(data.length > 0 ? data: false)
+          setLoading(false)
+        })
+          
+      }, 500);
+    
+      return () => {
+        clearTimeout(getData)
+        setLoading(false)
+      }
+
     } else {
       setResult(false);
     }
 
 
-    const getData = setTimeout(() => {
-      fetch(`https://restcountries.eu/rest/v2/all`)
-      .then(res => res.json())
-      .then(data => setResult(data))
-    }, 500);
     
-
-    return () => {
-      clearTimeout(getData)
-    }
 
   }, [search]);
 
@@ -81,11 +99,13 @@ function App() {
           <div className="search-result">
             {result &&
               result.map((item) => (
-                <div key={item.id} className="search-result-item">
-                  {item.title}
+                <div onClick={() => getResultItem(item)} key={item.id} className="search-result-item">
+                  <div className="item-name">{item.name}</div>
+                  <div className="item-phone">{item.phone}</div>
+                  
                 </div>
               ))}
-            {!result && (
+            {!result && loading === false && (
               <div className="result-not-found">
                 "{search}" has not been found yet!
               </div>
